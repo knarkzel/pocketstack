@@ -5,7 +5,7 @@ use axum::{
     routing::{get, Router},
 };
 use rust_embed::RustEmbed;
-use std::{net::SocketAddr, path::PathBuf};
+use std::net::SocketAddr;
 use tower_http::cors::CorsLayer;
 
 #[tokio::main]
@@ -21,9 +21,8 @@ async fn main() {
         ]));
 
     // Start server
-    let port = 3000;
-    let address = SocketAddr::from(([0, 0, 0, 0], port));
-    println!("Listening on http://localhost:{port}");
+    let address = SocketAddr::from(([0, 0, 0, 0], 3000));
+    println!("Listening on http://localhost:3000");
     axum::Server::bind(&address)
         .serve(app.into_make_service())
         .await
@@ -35,17 +34,11 @@ async fn index_handler() -> impl IntoResponse {
 }
 
 async fn static_handler(uri: Uri) -> impl IntoResponse {
-    let path = uri.path().trim_start_matches("/");
-
-    // Add .html to routes
-    match PathBuf::from(path).extension() {
-        Some(_) => StaticFile(path.to_string()),
-        None => StaticFile(format!("{path}.html")),
-    }
+    StaticFile(uri.path().trim_start_matches("/").to_string())
 }
 
 #[derive(RustEmbed)]
-#[folder = "web/build"]
+#[folder = "web/dist"]
 struct Assets;
 
 pub struct StaticFile<T>(pub T);
