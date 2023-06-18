@@ -1,0 +1,15 @@
+[package]
+name = "pocketstack"
+version = "0.1.0"
+edition = "2021"
+
+[profile.release]
+lto = true
+strip = true
+
+[dependencies]
+axum = "0.6"
+mime_guess = "2"
+tokio = { version = "1.28", features = ["full"] }
+tower-http = { version = "0.4", features = ["cors"] }
+rust-embed = { version = "6.7", features = ["axum-ex"] }
